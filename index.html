@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adventure Escape Game</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#0b0b0b;
+    color:white;
+    margin:0;
+    text-align:center;
+}
+
+h1{margin:10px;}
+
+.scoreboard{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    background:#000;
+    padding:10px;
+    position:sticky;
+    top:0;
+}
+
+.team{
+    background:#222;
+    padding:8px;
+    border-radius:10px;
+}
+
+.team input{
+    width:60px;
+    text-align:center;
+}
+
+/* MENU */
+#menu{
+    padding:20px;
+}
+
+.levelBtn{
+    background:#222;
+    padding:20px;
+    margin:10px auto;
+    width:60%;
+    border-radius:15px;
+    cursor:pointer;
+    font-size:22px;
+    transition:0.2s;
+}
+
+.levelBtn:hover{
+    background:#333;
+    transform:scale(1.03);
+}
+
+/* GAME */
+#game{
+    display:none;
+    padding:20px;
+}
+
+.question{
+    font-size:22px;
+    margin:20px;
+}
+
+.option{
+    display:block;
+    background:#333;
+    margin:10px auto;
+    padding:10px;
+    width:60%;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.option:hover{
+    background:#555;
+}
+
+.correct{background:#00c853 !important;}
+.wrong{background:#d50000 !important;}
+
+button{
+    margin:10px;
+    padding:10px 15px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.next{background:#2962ff;color:white;}
+.back{background:#ff1744;color:white;}
+</style>
+</head>
+
+<body>
+
+<h1>🧭 Adventure Escape Game</h1>
+
+<!-- 🏆 SCOREBOARD -->
+<div class="scoreboard">
+
+<div class="team">T1 <input id="t1" value="0"></div>
+<div class="team">T2 <input id="t2" value="0"></div>
+<div class="team">T3 <input id="t3" value="0"></div>
+<div class="team">T4 <input id="t4" value="0"></div>
+
+</div>
+
+<!-- MENU -->
+<div id="menu">
+
+<div class="levelBtn" onclick="start(0)">🗺 Level 1: Forest Escape</div>
+<div class="levelBtn" onclick="start(1)">🏜 Level 2: Desert Escape</div>
+<div class="levelBtn" onclick="start(2)">🏔 Level 3: Mountain Escape</div>
+<div class="levelBtn" onclick="start(3)">🌍 Final Boss Level</div>
+
+</div>
+
+<!-- GAME -->
+<div id="game">
+
+<h2 id="levelName"></h2>
+
+<div class="question" id="q"></div>
+<div id="options"></div>
+
+<button class="next" onclick="nextQ()">Next</button>
+<button class="back" onclick="backMenu()">Menu</button>
+
+<p id="result"></p>
+
+</div>
+
+<script>
+
+let levels=[
+{
+name:"🗺 Forest Escape",
+q:[
+{q:"He ___ going home",o:["is","are","am","be"],a:0},
+{q:"Big synonym",o:["large","small","tiny","weak"],a:0},
+{q:"5+5",o:["9","10","11","12"],a:1},
+{q:"Opposite of hot",o:["cold","warm","fire","sun"],a:0},
+{q:"🐶 animal",o:["dog","cat","lion","cow"],a:0}
+]
+},
+{
+name:"🏜 Desert Escape",
+q:[
+{q:"Capital Uzbekistan",o:["Tashkent","Bukhara","Khiva","Samarkand"],a:0},
+{q:"Fast synonym",o:["quick","slow","weak","late"],a:0},
+{q:"12÷3",o:["2","3","4","5"],a:2},
+{q:"Water freezes at",o:["0","10","20","30"],a:0},
+{q:"🔥 hot thing",o:["fire","ice","water","wind"],a:0}
+]
+},
+{
+name:"🏔 Mountain Escape",
+q:[
+{q:"He ___ a book",o:["reads","read","reading","red"],a:0},
+{q:"Smart synonym",o:["clever","stupid","bad","weak"],a:0},
+{q:"3x3",o:["6","9","12","8"],a:1},
+{q:"🐱 animal",o:["cat","dog","lion","cow"],a:0},
+{q:"Sun rises in",o:["east","west","north","south"],a:0}
+]
+},
+{
+name:"🌍 Final Boss Level",
+q:[
+{q:"Earth is a",o:["planet","star","moon","sun"],a:0},
+{q:"Happy synonym",o:["joyful","angry","sad","bad"],a:0},
+{q:"10-3",o:["6","7","8","9"],a:1},
+{q:"Speak without mouth",o:["echo","voice","sound","wind"],a:0},
+{q:"🚗 transport",o:["car","bike","plane","train"],a:0}
+]
+}
+];
+
+let l=0;
+let i=0;
+
+function start(x){
+    l=x;
+    i=0;
+
+    document.getElementById("menu").style.display="none";
+    document.getElementById("game").style.display="block";
+
+    document.getElementById("levelName").innerText=levels[l].name;
+    load();
+}
+
+function load(){
+    let q=levels[l].q[i];
+    document.getElementById("q").innerText=q.q;
+
+    let html="";
+    q.o.forEach((op,idx)=>{
+        html+=`<div class="option" onclick="check(${idx})">${op}</div>`;
+    });
+
+    document.getElementById("options").innerHTML=html;
+    document.getElementById("result").innerText="";
+}
+
+function check(idx){
+    let a=levels[l].q[i].a;
+
+    document.querySelectorAll(".option").forEach((el,j)=>{
+        if(j==a) el.classList.add("correct");
+        else if(j==idx) el.classList.add("wrong");
+    });
+}
+
+function nextQ(){
+    i++;
+    if(i>=5){
+        alert("🎉 Level Completed!");
+        i=0;
+    }
+    load();
+}
+
+function backMenu(){
+    document.getElementById("menu").style.display="block";
+    document.getElementById("game").style.display="none";
+}
+
+</script>
+
+</body>
+</html>
