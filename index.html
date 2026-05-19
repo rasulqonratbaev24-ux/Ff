@@ -1,238 +1,275 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="uz">
 <head>
-<meta charset="UTF-8">
-<title>Adventure Escape Game</title>
-
-<style>
-body{
-    font-family:Arial;
-    background:#0b0b0b;
-    color:white;
-    margin:0;
-    text-align:center;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>30 Savolli Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      text-align: center;
+    }h1 {
+  margin-top: 20px;
 }
 
-h1{margin:10px;}
-
-.scoreboard{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    background:#000;
-    padding:10px;
-    position:sticky;
-    top:0;
+.container {
+  padding: 20px;
 }
 
-.team{
-    background:#222;
-    padding:8px;
-    border-radius:10px;
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 10px;
+  max-width: 700px;
+  margin: auto;
 }
 
-.team input{
-    width:60px;
-    text-align:center;
+.number-btn {
+  padding: 18px;
+  border: none;
+  border-radius: 15px;
+  background: #2563eb;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* MENU */
-#menu{
-    padding:20px;
+.number-btn:hover {
+  background: #1d4ed8;
+  transform: scale(1.05);
 }
 
-.levelBtn{
-    background:#222;
-    padding:20px;
-    margin:10px auto;
-    width:60%;
-    border-radius:15px;
-    cursor:pointer;
-    font-size:22px;
-    transition:0.2s;
+.hidden {
+  display: none;
 }
 
-.levelBtn:hover{
-    background:#333;
-    transform:scale(1.03);
+.question-box {
+  max-width: 600px;
+  margin: 30px auto;
+  background: rgba(255,255,255,0.1);
+  padding: 25px;
+  border-radius: 20px;
 }
 
-/* GAME */
-#game{
-    display:none;
-    padding:20px;
+.option {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #334155;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
 }
 
-.question{
-    font-size:22px;
-    margin:20px;
+.option:hover {
+  background: #475569;
 }
 
-.option{
-    display:block;
-    background:#333;
-    margin:10px auto;
-    padding:10px;
-    width:60%;
-    border-radius:10px;
-    cursor:pointer;
+.result {
+  font-size: 26px;
+  margin-top: 20px;
+  font-weight: bold;
 }
 
-.option:hover{
-    background:#555;
+.score {
+  font-size: 70px;
+  margin-top: 20px;
+  color: #22c55e;
+  animation: pop 0.5s ease;
 }
 
-.correct{background:#00c853 !important;}
-.wrong{background:#d50000 !important;}
-
-button{
-    margin:10px;
-    padding:10px 15px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
+.prizes {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.next{background:#2962ff;color:white;}
-.back{background:#ff1744;color:white;}
-</style>
+.prize {
+  background: rgba(255,255,255,0.1);
+  padding: 15px;
+  border-radius: 15px;
+  font-size: 18px;
+}
+
+.back-btn {
+  margin-top: 25px;
+  padding: 14px 25px;
+  border: none;
+  border-radius: 12px;
+  background: #16a34a;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.back-btn:hover {
+  background: #15803d;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+  </style>
 </head>
+<body>  <!-- Fon musiqasi -->  <audio id="bgMusic" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>  <button onclick="toggleMusic()" style="position:fixed;top:15px;right:15px;padding:10px 15px;border:none;border-radius:10px;background:#f59e0b;color:white;cursor:pointer;z-index:1000;">
+    🎵 Musiqani yoq/o‘chir
+  </button>  <div class="container" id="homePage">
+    <h1>30 Savolli Quiz</h1>
+    <p>Raqamni tanlang va savolga javob bering</p><div class="numbers" id="numbersContainer"></div>
 
-<body>
+  </div>  <div class="question-box hidden" id="questionPage">
+    <h2 id="questionTitle"></h2>
+    <div id="optionsContainer"></div>
+    <p class="result" id="resultText"></p>
+  </div>  <div class="container hidden" id="rewardPage">
+    <h1>🎉 Tabriklaymiz!</h1>
+    <p>Sizning random balingiz:</p>
+    <div class="score" id="scoreValue"></div><h2>🎁 Random 5 ta priz</h2>
+<div class="prizes" id="prizeContainer"></div>
 
-<h1>🧭 Adventure Escape Game</h1>
+<button class="back-btn" onclick="goHome()">Bosh sahifaga qaytish</button>
 
-<!-- 🏆 SCOREBOARD -->
-<div class="scoreboard">
+  </div>  <script>
+    const questions = [];
 
-<div class="team">T1 <input id="t1" value="0"></div>
-<div class="team">T2 <input id="t2" value="0"></div>
-<div class="team">T3 <input id="t3" value="0"></div>
-<div class="team">T4 <input id="t4" value="0"></div>
-
-</div>
-
-<!-- MENU -->
-<div id="menu">
-
-<div class="levelBtn" onclick="start(0)">🗺 Level 1: Forest Escape</div>
-<div class="levelBtn" onclick="start(1)">🏜 Level 2: Desert Escape</div>
-<div class="levelBtn" onclick="start(2)">🏔 Level 3: Mountain Escape</div>
-<div class="levelBtn" onclick="start(3)">🌍 Final Boss Level</div>
-
-</div>
-
-<!-- GAME -->
-<div id="game">
-
-<h2 id="levelName"></h2>
-
-<div class="question" id="q"></div>
-<div id="options"></div>
-
-<button class="next" onclick="nextQ()">Next</button>
-<button class="back" onclick="backMenu()">Menu</button>
-
-<p id="result"></p>
-
-</div>
-
-<script>
-
-let levels=[
-{
-name:"🗺 Forest Escape",
-q:[
-{q:"He ___ going home",o:["is","are","am","be"],a:0},
-{q:"Big synonym",o:["large","small","tiny","weak"],a:0},
-{q:"5+5",o:["9","10","11","12"],a:1},
-{q:"Opposite of hot",o:["cold","warm","fire","sun"],a:0},
-{q:"🐶 animal",o:["dog","cat","lion","cow"],a:0}
-]
-},
-{
-name:"🏜 Desert Escape",
-q:[
-{q:"Capital Uzbekistan",o:["Tashkent","Bukhara","Khiva","Samarkand"],a:0},
-{q:"Fast synonym",o:["quick","slow","weak","late"],a:0},
-{q:"12÷3",o:["2","3","4","5"],a:2},
-{q:"Water freezes at",o:["0","10","20","30"],a:0},
-{q:"🔥 hot thing",o:["fire","ice","water","wind"],a:0}
-]
-},
-{
-name:"🏔 Mountain Escape",
-q:[
-{q:"He ___ a book",o:["reads","read","reading","red"],a:0},
-{q:"Smart synonym",o:["clever","stupid","bad","weak"],a:0},
-{q:"3x3",o:["6","9","12","8"],a:1},
-{q:"🐱 animal",o:["cat","dog","lion","cow"],a:0},
-{q:"Sun rises in",o:["east","west","north","south"],a:0}
-]
-},
-{
-name:"🌍 Final Boss Level",
-q:[
-{q:"Earth is a",o:["planet","star","moon","sun"],a:0},
-{q:"Happy synonym",o:["joyful","angry","sad","bad"],a:0},
-{q:"10-3",o:["6","7","8","9"],a:1},
-{q:"Speak without mouth",o:["echo","voice","sound","wind"],a:0},
-{q:"🚗 transport",o:["car","bike","plane","train"],a:0}
-]
-}
-];
-
-let l=0;
-let i=0;
-
-function start(x){
-    l=x;
-    i=0;
-
-    document.getElementById("menu").style.display="none";
-    document.getElementById("game").style.display="block";
-
-    document.getElementById("levelName").innerText=levels[l].name;
-    load();
-}
-
-function load(){
-    let q=levels[l].q[i];
-    document.getElementById("q").innerText=q.q;
-
-    let html="";
-    q.o.forEach((op,idx)=>{
-        html+=`<div class="option" onclick="check(${idx})">${op}</div>`;
-    });
-
-    document.getElementById("options").innerHTML=html;
-    document.getElementById("result").innerText="";
-}
-
-function check(idx){
-    let a=levels[l].q[i].a;
-
-    document.querySelectorAll(".option").forEach((el,j)=>{
-        if(j==a) el.classList.add("correct");
-        else if(j==idx) el.classList.add("wrong");
-    });
-}
-
-function nextQ(){
-    i++;
-    if(i>=5){
-        alert("🎉 Level Completed!");
-        i=0;
+    for (let i = 1; i <= 30; i++) {
+      questions.push({
+        question: `${i}-savol: O'zbekiston poytaxti qaysi shahar?`,
+        options: ["Samarqand", "Buxoro", "Toshkent", "Xiva"],
+        answer: "Toshkent"
+      });
     }
-    load();
-}
 
-function backMenu(){
-    document.getElementById("menu").style.display="block";
-    document.getElementById("game").style.display="none";
-}
+    const prizes = [
+      "🎧 Quloqchin",
+      "📱 Telefon",
+      "💻 Noutbuk",
+      "⌚ Smart soat",
+      "🎮 PlayStation",
+      "📷 Kamera",
+      "🖥 Monitor",
+      "🎤 Mikrofon",
+      "🕹 Joystick",
+      "📚 Kitob",
+      "💰 100$",
+      "🎁 Gift Card",
+      "🚲 Velosiped",
+      "🏆 Kubok",
+      "🍫 Shirinlik",
+      "📦 Sirli Box",
+      "🎟 VIP chipta",
+      "🧸 O'yinchoq",
+      "📀 Disk",
+      "🔋 Powerbank",
+      "🎹 Piano",
+      "🎨 Rasm to'plami",
+      "📱 iPhone",
+      "💡 Smart lamp",
+      "🎬 Kino bileti",
+      "🍔 Fast Food",
+      "☕ Coffee Voucher",
+      "🎲 Stol o'yini",
+      "🏀 Basketbol to'pi",
+      "⚽ Futbol to'pi"
+    ];
 
-</script>
+    const numbersContainer = document.getElementById("numbersContainer");
 
-</body>
+    for (let i = 1; i <= 30; i++) {
+      const btn = document.createElement("button");
+      btn.className = "number-btn";
+      btn.innerText = i;
+      btn.onclick = () => openQuestion(i - 1);
+      numbersContainer.appendChild(btn);
+    }
+
+    function openQuestion(index) {
+      document.getElementById("homePage").classList.add("hidden");
+      document.getElementById("questionPage").classList.remove("hidden");
+
+      const q = questions[index];
+
+      document.getElementById("questionTitle").innerText = q.question;
+
+      const optionsContainer = document.getElementById("optionsContainer");
+      optionsContainer.innerHTML = "";
+
+      document.getElementById("resultText").innerText = "";
+
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.innerText = option;
+
+        btn.onclick = () => {
+          if (option === q.answer) {
+            document.getElementById("resultText").innerText = "✅ To'g'ri javob!";
+
+            setTimeout(() => {
+              showRewardPage();
+            }, 1000);
+
+          } else {
+            document.getElementById("resultText").innerText = "❌ Noto'g'ri javob!";
+          }
+        };
+
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function showRewardPage() {
+      document.getElementById("questionPage").classList.add("hidden");
+      document.getElementById("rewardPage").classList.remove("hidden");
+
+      // -5 dan 5 gacha random son
+      const randomScore = Math.floor(Math.random() * 11) - 5;
+      document.getElementById("scoreValue").innerText = randomScore;
+
+      // Random 5 ta prize
+      const shuffled = [...prizes].sort(() => 0.5 - Math.random());
+      const selectedPrizes = shuffled.slice(0, 5);
+
+      const prizeContainer = document.getElementById("prizeContainer");
+      prizeContainer.innerHTML = "";
+
+      selectedPrizes.forEach(prize => {
+        const div = document.createElement("div");
+        div.className = "prize";
+        div.innerText = prize;
+        prizeContainer.appendChild(div);
+      });
+    }
+
+    function toggleMusic() {
+      const music = document.getElementById("bgMusic");
+
+      if (music.paused) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+
+    function goHome() {
+      document.getElementById("rewardPage").classList.add("hidden");
+      document.getElementById("homePage").classList.remove("hidden");
+    }
+  </script></body>
 </html>
