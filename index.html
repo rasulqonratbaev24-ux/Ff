@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>30 Savolli Quiz</title>
+<title>Quiz Game</title>
 
 <style>
 body{
@@ -14,6 +14,7 @@ body{
   text-align:center;
 }
 .container{padding:20px;}
+
 .numbers{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(70px,1fr));
@@ -21,6 +22,7 @@ body{
   max-width:700px;
   margin:auto;
 }
+
 .number-btn{
   padding:18px;
   border:none;
@@ -30,6 +32,7 @@ body{
   font-size:18px;
   cursor:pointer;
 }
+
 .hidden{display:none;}
 
 .question-box{
@@ -54,17 +57,20 @@ body{
 
 .result{margin-top:15px;font-size:18px;}
 
-.prizes{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-  gap:10px;
-  margin-top:20px;
+.prize-btn{
+  margin-top:15px;
+  padding:12px 20px;
+  border:none;
+  border-radius:10px;
+  background:#f59e0b;
+  color:white;
+  cursor:pointer;
 }
 
-.prize{
-  background:rgba(255,255,255,0.1);
-  padding:15px;
-  border-radius:12px;
+.score{
+  font-size:40px;
+  margin-top:15px;
+  color:#22c55e;
 }
 </style>
 </head>
@@ -80,55 +86,37 @@ body{
 <h2 id="questionTitle"></h2>
 <div id="optionsContainer"></div>
 <p class="result" id="resultText"></p>
-<button onclick="goHome()">⬅ Orqaga</button>
-</div>
 
-<div class="container hidden" id="rewardPage">
-<h1>🎉 Random Prizlar</h1>
-<div class="prizes" id="prizeContainer"></div>
-<button onclick="goHome()">Bosh sahifa</button>
+<!-- RANDOM BUTTON SHU YERDA CHIQADI -->
+<div id="rewardBox"></div>
+
 </div>
 
 <script>
 
 const questions = [
-{q:"O‘zbekiston poytaxti?",o:["Buxoro","Toshkent","Samarqand","Andijon"],a:"Toshkent"},
 {q:"2+2=?",o:["3","4","5","6"],a:"4"},
-{q:"Eng katta sayyora?",o:["Yer","Mars","Yupiter","Venera"],a:"Yupiter"},
-{q:"3*3=?",o:["6","9","12","3"],a:"9"},
+{q:"O‘zbekiston poytaxti?",o:["Toshkent","Buxoro","Samarqand","Andijon"],a:"Toshkent"},
+{q:"5*5=?",o:["10","20","25","30"],a:"25"},
 {q:"Suv formulasi?",o:["CO2","H2O","O2","NaCl"],a:"H2O"},
-{q:"O‘zbekiston nechta viloyat?",o:["10","12","14","16"],a:"12"},
-{q:"Eng tez hayvon?",o:["Arslon","Qoplon","Gepar","Bo‘ri"],a:"Gepar"},
-{q:"5+5=?",o:["10","11","9","8"],a:"10"},
-{q:"Quyosh nima?",o:["Yulduz","Sayyora","Oy","Gaz"],a:"Yulduz"},
-{q:"10-3=?",o:["6","7","8","9"],a:"7"},
+{q:"10-3=?",o:["5","6","7","8"],a:"7"},
+{q:"Eng katta sayyora?",o:["Yer","Mars","Yupiter","Venera"],a:"Yupiter"},
+{q:"3+3=?",o:["5","6","7","8"],a:"6"},
 {q:"HTML nima?",o:["Til","O‘yin","Kitob","Film"],a:"Til"},
-{q:"Yer nechanchi sayyora?",o:["1","2","3","4"],a:"3"},
-{q:"12/2=?",o:["5","6","7","8"],a:"6"},
-{q:"Eng katta okean?",o:["Atlantika","Hind","Tinch","Shimoliy"],a:"Tinch"},
-{q:"Python nima?",o:["Til","Hayvon","Mashina","Oziq"],a:"Til"},
-{q:"9+1=?",o:["10","11","9","12"],a:"10"},
-{q:"1 soat nechta minut?",o:["50","60","70","100"],a:"60"},
-{q:"O‘zbekiston mustaqilligi?",o:["1990","1991","1992","1993"],a:"1991"},
-{q:"20/4=?",o:["4","5","6","7"],a:"5"},
-{q:"Eng baland tog‘?",o:["Everest","K2","And","Alp"],a:"Everest"},
-{q:"7+7=?",o:["14","15","16","13"],a:"14"},
-{q:"Dunyo aholisi yashaydi?",o:["Mars","Yer","Oy","Quyosh"],a:"Yer"},
-{q:"100-50=?",o:["40","50","60","70"],a:"50"},
-{q:"Eng katta qit’a?",o:["Osiyo","Yevropa","Afrika","Amerika"],a:"Osiyo"},
-{q:"4*4=?",o:["12","14","16","18"],a:"16"},
-{q:"Suv qaynash harorati?",o:["90","100","80","110"],a:"100"},
-{q:"8+2=?",o:["9","10","11","12"],a:"10"},
-{q:"Oy nima?",o:["Yulduz","Sayyora","Tabiiy yo‘ldosh","Gaz"],a:"Tabiiy yo‘ldosh"},
-{q:"6*2=?",o:["10","12","14","16"],a:"12"},
-{q:"Yer shakli?",o:["Yassi","Shar","Kub","Doira"],a:"Shar"}
+{q:"Yer shakli?",o:["Shar","Kub","Yassi","Doira"],a:"Shar"},
+{q:"8/2=?",o:["2","3","4","5"],a:"4"}
 ];
 
-const prizeNumbers = [];
-while(prizeNumbers.length < 5){
-  let r = Math.floor(Math.random()*30)+1;
-  if(!prizeNumbers.includes(r)) prizeNumbers.push(r);
+// 30 ta bo‘lishi uchun takrorlab to‘ldiramiz
+while(questions.length < 30){
+  questions.push({
+    q:`${questions.length+1}-savol`,
+    o:["A","B","C","D"],
+    a:"A"
+  });
 }
+
+let currentIndex = null;
 
 const container = document.getElementById("numbersContainer");
 
@@ -142,6 +130,8 @@ for(let i=0;i<30;i++){
 }
 
 function openQ(i){
+  currentIndex = i;
+
   document.getElementById("homePage").classList.add("hidden");
   document.getElementById("questionPage").classList.remove("hidden");
 
@@ -152,6 +142,7 @@ function openQ(i){
   let box=document.getElementById("optionsContainer");
   box.innerHTML="";
   document.getElementById("resultText").innerText="";
+  document.getElementById("rewardBox").innerHTML="";
 
   q.o.forEach(opt=>{
     let b=document.createElement("button");
@@ -160,9 +151,15 @@ function openQ(i){
 
     b.onclick=()=>{
       if(opt===q.a){
-        document.getElementById("resultText").innerText="✅ To‘g‘ri!";
+        document.getElementById("resultText").innerText="✅ To‘g‘ri javob!";
+
         document.getElementById(`btn-${i+1}`).style.background="#16a34a";
-        document.getElementById(`btn-${i+1}`).innerText="✔ "+(i+1);
+
+        // 🔥 RANDOM TUGMA CHIQADI
+        document.getElementById("rewardBox").innerHTML=`
+          <button class="prize-btn" onclick="getRandom()">🎁 Random ball olish</button>
+          <div id="score"></div>
+        `;
       } else {
         document.getElementById("resultText").innerText="❌ Noto‘g‘ri!";
       }
@@ -172,24 +169,10 @@ function openQ(i){
   });
 }
 
-function goHome(){
-  document.getElementById("questionPage").classList.add("hidden");
-  document.getElementById("rewardPage").classList.add("hidden");
-  document.getElementById("homePage").classList.remove("hidden");
-}
-
-function showPrizes(){
-  document.getElementById("rewardPage").classList.remove("hidden");
-
-  let box=document.getElementById("prizeContainer");
-  box.innerHTML="";
-
-  prizeNumbers.forEach(n=>{
-    let d=document.createElement("div");
-    d.className="prize";
-    d.innerText="🎁 Prize "+n;
-    box.appendChild(d);
-  });
+function getRandom(){
+  let score = Math.floor(Math.random()*11) - 5; // -5 dan +5
+  document.getElementById("score").innerHTML =
+    `<div class="score">${score}</div>`;
 }
 
 </script>
