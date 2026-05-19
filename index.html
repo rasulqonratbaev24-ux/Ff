@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>30 Savolli Quiz + Slot</title>
+<title>Quiz + Slot</title>
 
 <style>
 body{
@@ -66,10 +66,7 @@ body{
   gap:10px;
 }
 
-.arrow{
-  font-size:30px;
-  color:#f59e0b;
-}
+.arrow{font-size:30px;color:#f59e0b;}
 
 .window{
   width:120px;
@@ -92,18 +89,32 @@ body{
   border-radius:10px;
   color:white;
   cursor:pointer;
-  font-size:16px;
+}
+
+.back-btn{
+  margin-top:15px;
+  padding:10px 15px;
+  background:#16a34a;
+  border:none;
+  border-radius:10px;
+  color:white;
+  cursor:pointer;
 }
 
 .score{
   font-size:40px;
-  margin-top:15px;
+  margin-top:10px;
   color:#22c55e;
 }
 </style>
 </head>
 
 <body>
+
+<!-- 🔊 SOUND -->
+<audio id="spinSound">
+  <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
+</audio>
 
 <div class="container" id="homePage">
 <h1>30 Savolli Quiz</h1>
@@ -112,10 +123,13 @@ body{
 
 <div class="question-box hidden" id="questionPage">
 <h2 id="questionTitle"></h2>
+
 <div id="optionsContainer"></div>
 <p class="result" id="resultText"></p>
 
 <div id="rewardBox"></div>
+
+<button class="back-btn" onclick="goHome()">⬅ Bosh sahifa</button>
 
 </div>
 
@@ -127,9 +141,7 @@ const questions = [
 {q:"5*5=?",o:["10","20","25","30"],a:"25"},
 {q:"Suv formulasi?",o:["CO2","H2O","O2","NaCl"],a:"H2O"},
 {q:"10-3=?",o:["5","6","7","8"],a:"7"},
-{q:"Eng katta sayyora?",o:["Yer","Mars","Yupiter","Venera"],a:"Yupiter"},
 {q:"3+3=?",o:["5","6","7","8"],a:"6"},
-{q:"HTML nima?",o:["Til","O‘yin","Kitob","Film"],a:"Til"},
 {q:"Yer shakli?",o:["Shar","Kub","Yassi","Doira"],a:"Shar"},
 {q:"8/2=?",o:["2","3","4","5"],a:"4"}
 ];
@@ -142,7 +154,6 @@ while(questions.length < 30){
   });
 }
 
-let currentIndex = null;
 let spinning = false;
 let finalValue = 0;
 
@@ -152,13 +163,11 @@ for(let i=0;i<30;i++){
   let btn=document.createElement("button");
   btn.className="number-btn";
   btn.innerText=i+1;
-  btn.id=`btn-${i+1}`;
   btn.onclick=()=>openQ(i);
   container.appendChild(btn);
 }
 
 function openQ(i){
-  currentIndex = i;
 
   document.getElementById("homePage").classList.add("hidden");
   document.getElementById("questionPage").classList.remove("hidden");
@@ -180,10 +189,7 @@ function openQ(i){
     b.onclick=()=>{
       if(opt===q.a){
         document.getElementById("resultText").innerText="✅ To‘g‘ri javob!";
-
-        document.getElementById(`btn-${i+1}`).style.background="#16a34a";
-
-        showSlot(); // 🎰 reward chiqadi
+        showSlot();
       } else {
         document.getElementById("resultText").innerText="❌ Noto‘g‘ri!";
       }
@@ -194,20 +200,27 @@ function openQ(i){
 }
 
 function showSlot(){
-  document.getElementById("rewardBox").innerHTML = `
+  document.getElementById("rewardBox").innerHTML=`
     <div class="slot">
       <div class="arrow">⬅</div>
       <div class="window" id="slotValue">0</div>
       <div class="arrow">➡</div>
     </div>
-    <button class="spin-btn" onclick="spin()">🎰 Aylantirish</button>
+
+    <button class="spin-btn" onclick="spin()">🎰 Spin</button>
     <div id="finalScore"></div>
   `;
 }
 
 function spin(){
+
   if(spinning) return;
   spinning = true;
+
+  // 🔊 SOUND
+  let sound = document.getElementById("spinSound");
+  sound.currentTime = 0;
+  sound.play();
 
   let values = [-5,-4,-3,-2,-1,0,1,2,3,4,5];
   let i = 0;
@@ -216,7 +229,7 @@ function spin(){
   let interval = setInterval(()=>{
     slot.innerText = values[i];
     i = (i + 1) % values.length;
-  }, 70);
+  }, 60);
 
   setTimeout(()=>{
     clearInterval(interval);
@@ -229,6 +242,11 @@ function spin(){
 
     spinning = false;
   }, 2000);
+}
+
+function goHome(){
+  document.getElementById("questionPage").classList.add("hidden");
+  document.getElementById("homePage").classList.remove("hidden");
 }
 
 </script>
