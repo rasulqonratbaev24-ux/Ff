@@ -150,44 +150,21 @@
 
     for (let i = 1; i <= 30; i++) {
       questions.push({
-        question: `${i}-savol: O'zbekiston poytaxti qaysi shahar?`,
-        options: ["Samarqand", "Buxoro", "Toshkent", "Xiva"],
-        answer: "Toshkent"
+        question: `${i}-savol`,
+        options: ["🎁 PRIZE", "🎁 PRIZE", "🎁 PRIZE", "🎁 PRIZE"],
+        answer: "🎁 PRIZE"
       });
     }
 
     const prizes = [
-      "🎧 Quloqchin",
-      "📱 Telefon",
-      "💻 Noutbuk",
-      "⌚ Smart soat",
-      "🎮 PlayStation",
-      "📷 Kamera",
-      "🖥 Monitor",
-      "🎤 Mikrofon",
-      "🕹 Joystick",
-      "📚 Kitob",
-      "💰 100$",
-      "🎁 Gift Card",
-      "🚲 Velosiped",
-      "🏆 Kubok",
-      "🍫 Shirinlik",
-      "📦 Sirli Box",
-      "🎟 VIP chipta",
-      "🧸 O'yinchoq",
-      "📀 Disk",
-      "🔋 Powerbank",
-      "🎹 Piano",
-      "🎨 Rasm to'plami",
-      "📱 iPhone",
-      "💡 Smart lamp",
-      "🎬 Kino bileti",
-      "🍔 Fast Food",
-      "☕ Coffee Voucher",
-      "🎲 Stol o'yini",
-      "🏀 Basketbol to'pi",
-      "⚽ Futbol to'pi"
+      "🎁 PRIZE",
+      "🎁 PRIZE",
+      "🎁 PRIZE",
+      "🎁 PRIZE",
+      "🎁 PRIZE"
     ];
+
+    let currentNumber = 1;
 
     const numbersContainer = document.getElementById("numbersContainer");
 
@@ -195,6 +172,13 @@
       const btn = document.createElement("button");
       btn.className = "number-btn";
       btn.innerText = i;
+      btn.id = `btn-${i}`;
+
+      if (i !== 1) {
+        btn.disabled = true;
+        btn.style.opacity = "0.4";
+      }
+
       btn.onclick = () => openQuestion(i - 1);
       numbersContainer.appendChild(btn);
     }
@@ -203,9 +187,13 @@
       document.getElementById("homePage").classList.add("hidden");
       document.getElementById("questionPage").classList.remove("hidden");
 
+      document.getElementById("questionTitle").innerHTML = `
+        <button class="back-btn" onclick="showRandomPrizes()">🎁 Random Prize Ochish</button>
+      `;
+
       const q = questions[index];
 
-      document.getElementById("questionTitle").innerText = q.question;
+      document.getElementById("questionTitle").innerText = `🎁 ${index + 1}-son ichidagi PRIZE`;
 
       const optionsContainer = document.getElementById("optionsContainer");
       optionsContainer.innerHTML = "";
@@ -219,14 +207,17 @@
 
         btn.onclick = () => {
           if (option === q.answer) {
-            document.getElementById("resultText").innerText = "✅ To'g'ri javob!";
+            document.getElementById("resultText").innerText = "✅ To'g'ri javob! Keyingi raqam ochildi";
 
-            setTimeout(() => {
-              showRewardPage();
-            }, 1000);
+            if (currentNumber < 30) {
+              currentNumber++;
+              const nextBtn = document.getElementById(`btn-${currentNumber}`);
+              nextBtn.disabled = false;
+              nextBtn.style.opacity = "1";
+            }
 
           } else {
-            document.getElementById("resultText").innerText = "❌ Noto'g'ri javob!";
+            document.getElementById("resultText").innerText = "❌ Noto'g'ri! To'g'ri topmaguncha keyingi raqam ochilmaydi";
           }
         };
 
@@ -234,27 +225,33 @@
       });
     }
 
-    function showRewardPage() {
+    function showRandomPrizes() {
       document.getElementById("questionPage").classList.add("hidden");
       document.getElementById("rewardPage").classList.remove("hidden");
 
-      // -5 dan 5 gacha random son
       const randomScore = Math.floor(Math.random() * 11) - 5;
-      document.getElementById("scoreValue").innerText = randomScore;
+      document.getElementById("scoreValue").innerHTML = `
+        <button class="back-btn" onclick="showScore()">🎲 Ballni Tanlash</button>
+      `;
 
-      // Random 5 ta prize
       const shuffled = [...prizes].sort(() => 0.5 - Math.random());
       const selectedPrizes = shuffled.slice(0, 5);
 
       const prizeContainer = document.getElementById("prizeContainer");
       prizeContainer.innerHTML = "";
 
-      selectedPrizes.forEach(prize => {
+      selectedPrizes.forEach(() => {
         const div = document.createElement("div");
         div.className = "prize";
-        div.innerText = prize;
+        div.innerText = `🎁 PRIZE`;
         prizeContainer.appendChild(div);
       });
+
+      window.randomFinalScore = randomScore;
+    }
+
+    function showScore() {
+      document.getElementById("scoreValue").innerHTML = `<div class='score'>${window.randomFinalScore}</div>`;
     }
 
     function toggleMusic() {
