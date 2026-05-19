@@ -131,7 +131,7 @@
     🎵 Musiqani yoq/o‘chir
   </button>  <div class="container" id="homePage">
     <h1>30 Savolli Quiz</h1>
-    <p>To‘g‘ri javob bersangiz keyingi raqam ochiladi</p><div class="numbers" id="numbersContainer"></div>
+    <p>Istalgan raqamni tanlang va savolga javob bering</p><div class="numbers" id="numbersContainer"></div>
 
   </div>  <div class="question-box hidden" id="questionPage">
     <h2 id="questionTitle"></h2>
@@ -164,7 +164,7 @@
       "🎁 PRIZE"
     ];
 
-    let currentNumber = 1;
+    let solvedQuestions = [];
 
     const numbersContainer = document.getElementById("numbersContainer");
 
@@ -174,10 +174,7 @@
       btn.innerText = i;
       btn.id = `btn-${i}`;
 
-      if (i !== 1) {
-        btn.disabled = true;
-        btn.style.opacity = "0.4";
-      }
+      
 
       btn.onclick = () => openQuestion(i - 1);
       numbersContainer.appendChild(btn);
@@ -209,12 +206,11 @@
           if (option === q.answer) {
             document.getElementById("resultText").innerText = "✅ To'g'ri javob!";
 
-            if (currentNumber < 30) {
-              currentNumber++;
-              const nextBtn = document.getElementById(`btn-${currentNumber}`);
-              nextBtn.disabled = false;
-              nextBtn.style.opacity = "1";
-            }
+            solvedQuestions.push(index + 1);
+
+            const currentBtn = document.getElementById(`btn-${index + 1}`);
+            currentBtn.style.background = '#16a34a';
+            currentBtn.innerText = `✔ ${index + 1}`;
 
           } else {
             document.getElementById("resultText").innerText = "❌ Noto'g'ri javob! Bu savol o'yinda qoladi";
