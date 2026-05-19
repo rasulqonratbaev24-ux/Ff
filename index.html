@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz + Slot</title>
+<title>Quiz + Slot Fix</title>
 
 <style>
 body{
@@ -58,7 +58,7 @@ body{
 
 .result{margin-top:15px;font-size:18px;}
 
-.slot {
+.slot{
   display:flex;
   justify-content:center;
   align-items:center;
@@ -111,16 +111,18 @@ body{
 
 <body>
 
-<!-- 🔊 SOUND -->
+<!-- SOUND -->
 <audio id="spinSound">
-  <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
+  <source src="https://www.soundjay.com/button/sounds/button-16.mp3">
 </audio>
 
+<!-- HOME -->
 <div class="container" id="homePage">
 <h1>30 Savolli Quiz</h1>
 <div class="numbers" id="numbersContainer"></div>
 </div>
 
+<!-- QUESTION -->
 <div class="question-box hidden" id="questionPage">
 <h2 id="questionTitle"></h2>
 
@@ -130,7 +132,6 @@ body{
 <div id="rewardBox"></div>
 
 <button class="back-btn" onclick="goHome()">⬅ Bosh sahifa</button>
-
 </div>
 
 <script>
@@ -159,6 +160,7 @@ let finalValue = 0;
 
 const container = document.getElementById("numbersContainer");
 
+// 30 ta tugma
 for(let i=0;i<30;i++){
   let btn=document.createElement("button");
   btn.className="number-btn";
@@ -206,8 +208,7 @@ function showSlot(){
       <div class="window" id="slotValue">0</div>
       <div class="arrow">➡</div>
     </div>
-
-    <button class="spin-btn" onclick="spin()">🎰 Spin</button>
+    <button class="spin-btn" onclick="spin()">🎰 SPIN</button>
     <div id="finalScore"></div>
   `;
 }
@@ -217,7 +218,7 @@ function spin(){
   if(spinning) return;
   spinning = true;
 
-  // 🔊 SOUND
+  // SOUND
   let sound = document.getElementById("spinSound");
   sound.currentTime = 0;
   sound.play();
