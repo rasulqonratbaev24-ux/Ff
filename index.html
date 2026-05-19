@@ -131,7 +131,7 @@
     🎵 Musiqani yoq/o‘chir
   </button>  <div class="container" id="homePage">
     <h1>30 Savolli Quiz</h1>
-    <p>Raqamni tanlang va savolga javob bering</p><div class="numbers" id="numbersContainer"></div>
+    <p>To‘g‘ri javob bersangiz keyingi raqam ochiladi</p><div class="numbers" id="numbersContainer"></div>
 
   </div>  <div class="question-box hidden" id="questionPage">
     <h2 id="questionTitle"></h2>
@@ -193,7 +193,7 @@
 
       const q = questions[index];
 
-      document.getElementById("questionTitle").innerText = `🎁 ${index + 1}-son ichidagi PRIZE`;
+      document.getElementById("questionTitle").innerText = q.question;
 
       const optionsContainer = document.getElementById("optionsContainer");
       optionsContainer.innerHTML = "";
@@ -207,7 +207,7 @@
 
         btn.onclick = () => {
           if (option === q.answer) {
-            document.getElementById("resultText").innerText = "✅ To'g'ri javob! Keyingi raqam ochildi";
+            document.getElementById("resultText").innerText = "✅ To'g'ri javob!";
 
             if (currentNumber < 30) {
               currentNumber++;
@@ -217,7 +217,7 @@
             }
 
           } else {
-            document.getElementById("resultText").innerText = "❌ Noto'g'ri! To'g'ri topmaguncha keyingi raqam ochilmaydi";
+            document.getElementById("resultText").innerText = "❌ Noto'g'ri javob! Bu savol o'yinda qoladi";
           }
         };
 
