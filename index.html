@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Game</title>
+<title>30 Savolli Quiz + Slot</title>
 
 <style>
 body{
@@ -13,6 +13,7 @@ body{
   color:white;
   text-align:center;
 }
+
 .container{padding:20px;}
 
 .numbers{
@@ -57,14 +58,41 @@ body{
 
 .result{margin-top:15px;font-size:18px;}
 
-.prize-btn{
+.slot {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-top:20px;
+  gap:10px;
+}
+
+.arrow{
+  font-size:30px;
+  color:#f59e0b;
+}
+
+.window{
+  width:120px;
+  height:60px;
+  background:#111827;
+  border:2px solid #f59e0b;
+  border-radius:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  font-weight:bold;
+}
+
+.spin-btn{
   margin-top:15px;
   padding:12px 20px;
+  background:#f59e0b;
   border:none;
   border-radius:10px;
-  background:#f59e0b;
   color:white;
   cursor:pointer;
+  font-size:16px;
 }
 
 .score{
@@ -87,7 +115,6 @@ body{
 <div id="optionsContainer"></div>
 <p class="result" id="resultText"></p>
 
-<!-- RANDOM BUTTON SHU YERDA CHIQADI -->
 <div id="rewardBox"></div>
 
 </div>
@@ -96,7 +123,7 @@ body{
 
 const questions = [
 {q:"2+2=?",o:["3","4","5","6"],a:"4"},
-{q:"O‘zbekiston poytaxti?",o:["Toshkent","Buxoro","Samarqand","Andijon"],a:"Toshkent"},
+{q:"O‘zbekiston poytaxti?",o:["Buxoro","Toshkent","Samarqand","Andijon"],a:"Toshkent"},
 {q:"5*5=?",o:["10","20","25","30"],a:"25"},
 {q:"Suv formulasi?",o:["CO2","H2O","O2","NaCl"],a:"H2O"},
 {q:"10-3=?",o:["5","6","7","8"],a:"7"},
@@ -107,7 +134,6 @@ const questions = [
 {q:"8/2=?",o:["2","3","4","5"],a:"4"}
 ];
 
-// 30 ta bo‘lishi uchun takrorlab to‘ldiramiz
 while(questions.length < 30){
   questions.push({
     q:`${questions.length+1}-savol`,
@@ -117,6 +143,8 @@ while(questions.length < 30){
 }
 
 let currentIndex = null;
+let spinning = false;
+let finalValue = 0;
 
 const container = document.getElementById("numbersContainer");
 
@@ -155,11 +183,7 @@ function openQ(i){
 
         document.getElementById(`btn-${i+1}`).style.background="#16a34a";
 
-        // 🔥 RANDOM TUGMA CHIQADI
-        document.getElementById("rewardBox").innerHTML=`
-          <button class="prize-btn" onclick="getRandom()">🎁 Random ball olish</button>
-          <div id="score"></div>
-        `;
+        showSlot(); // 🎰 reward chiqadi
       } else {
         document.getElementById("resultText").innerText="❌ Noto‘g‘ri!";
       }
@@ -169,10 +193,42 @@ function openQ(i){
   });
 }
 
-function getRandom(){
-  let score = Math.floor(Math.random()*11) - 5; // -5 dan +5
-  document.getElementById("score").innerHTML =
-    `<div class="score">${score}</div>`;
+function showSlot(){
+  document.getElementById("rewardBox").innerHTML = `
+    <div class="slot">
+      <div class="arrow">⬅</div>
+      <div class="window" id="slotValue">0</div>
+      <div class="arrow">➡</div>
+    </div>
+    <button class="spin-btn" onclick="spin()">🎰 Aylantirish</button>
+    <div id="finalScore"></div>
+  `;
+}
+
+function spin(){
+  if(spinning) return;
+  spinning = true;
+
+  let values = [-5,-4,-3,-2,-1,0,1,2,3,4,5];
+  let i = 0;
+  let slot = document.getElementById("slotValue");
+
+  let interval = setInterval(()=>{
+    slot.innerText = values[i];
+    i = (i + 1) % values.length;
+  }, 70);
+
+  setTimeout(()=>{
+    clearInterval(interval);
+
+    finalValue = values[Math.floor(Math.random()*values.length)];
+    slot.innerText = finalValue;
+
+    document.getElementById("finalScore").innerHTML =
+      `<div class="score">${finalValue}</div>`;
+
+    spinning = false;
+  }, 2000);
 }
 
 </script>
